@@ -22,5 +22,5 @@ RUN useradd -m -d /home/jenkins -s /bin/sh jenkins &&\
 RUN usermod -aG docker jenkins
 # Standard SSH port 
 EXPOSE 22  
-ADD ./wrapdocker /usr/local/bin/wrapdocker
-CMD ["wrapdocker"]
+ADD ./start_sshd /usr/local/bin/start_sshd
+CMD ["start_sshd"]
