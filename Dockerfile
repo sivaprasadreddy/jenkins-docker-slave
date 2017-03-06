@@ -16,6 +16,15 @@ ENV LANG en_US.UTF-8 ENV LANGUAGE en_US:en ENV LC_ALL en_US.UTF-8
 RUN apt-get -q update &&\
     DEBIAN_FRONTEND="noninteractive" apt-get -q install -y -o Dpkg::Options::="--force-confnew"  --no-install-recommends openjdk-7-jre-headless &&\
     apt-get -q clean -y && rm -rf /var/lib/apt/lists/* && rm -f /var/cache/apt/*.bin
+RUN apt-get update && \
+    apt-get install -y python-software-properties && \
+    apt-get install -y software-properties-common && \
+    apt-get install -y python3-software-properties
+RUN apt-get install -y python-software-properties debconf-utils
+RUN add-apt-repository -y ppa:webupd8team/java
+RUN apt-get update
+RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections
+RUN apt-get install -y oracle-java8-installer
 # Set user jenkins to the image 
 RUN useradd -m -d /home/jenkins -s /bin/sh jenkins &&\
     echo "jenkins:jenkins" | chpasswd
