@@ -29,6 +29,11 @@ RUN apt-get install -y oracle-java8-installer
 RUN useradd -m -d /home/jenkins -s /bin/sh jenkins &&\
     echo "jenkins:jenkins" | chpasswd
 RUN usermod -aG docker jenkins
+
+# install Docker Compose
+RUN apt-get install -y python-pip
+RUN pip install docker-compose
+
 # Standard SSH port 
 EXPOSE 22  
 ADD ./wrapdocker /usr/local/bin/wrapdocker
