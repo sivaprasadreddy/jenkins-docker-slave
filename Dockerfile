@@ -45,7 +45,8 @@ RUN useradd -m -d /home/jenkins -s /bin/sh jenkins && \
 EXPOSE 22  
 
 # Install the magic wrapper.
-ADD ./wrapdocker /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/wrapdocker
+RUN mv /usr/sbin/sshd /usr/sbin/sshd_real
+ADD ./wrapdocker /usr/sbin/sshd
+RUN chmod +x /usr/sbin/sshd
 
-CMD ["wrapdocker"]
+CMD ["sshd"]

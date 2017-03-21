@@ -110,5 +110,5 @@ else
 	done
 	[[ $1 ]] && exec "$@"
 	# exec bash --login
-	/usr/sbin/sshd -D
+	/usr/sbin/sshd_real -D
 fi
