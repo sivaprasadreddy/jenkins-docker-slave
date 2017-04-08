@@ -41,6 +41,7 @@ RUN apt-get install -y software-properties-common && \
     apt-add-repository ppa:ansible/ansible && \
     apt-get update && \
     apt-get install -y ansible
+ADD ./resources/ansible.cfg /etc/ansible/ansible.cfg
 
 
 # Set user jenkins to the image 
@@ -53,7 +54,7 @@ EXPOSE 22
 
 # Install the magic wrapper.
 RUN mv /usr/sbin/sshd /usr/sbin/sshd_real
-ADD ./wrapdocker /usr/sbin/sshd
+ADD ./resources/wrapdocker /usr/sbin/sshd
 RUN chmod +x /usr/sbin/sshd
 
 CMD ["sshd"]
