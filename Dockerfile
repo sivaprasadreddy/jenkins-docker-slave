@@ -16,9 +16,6 @@ RUN apt-get install -qqy \
 # Install Docker from Docker Inc. repositories.
 RUN curl -sSL https://get.docker.com/ | sh
 
-# Define additional metadata for our image.
-VOLUME /var/lib/docker
-
 # Install Docker Compose
 RUN apt-get install -y python-pip
 RUN pip install docker-compose
@@ -55,8 +52,12 @@ RUN useradd -m -d /home/jenkins -s /bin/sh jenkins && \
 EXPOSE 22  
 
 # Install the magic wrapper.
-RUN mv /usr/sbin/sshd /usr/sbin/sshd_real
-ADD ./resources/wrapdocker /usr/sbin/sshd
-RUN chmod +x /usr/sbin/sshd
+ADD ./resources/wrapdocker /usr/local/bin/wrapdocker
+RUN chmod +x /usr/local/bin/wrapdocker
+VOLUME /var/lib/docker
 
-CMD ["sshd"]
+# place the jenkins slave startup script into the container
+ADD jenkins-slave-startup.sh /
+RUN chmod +x /jenkins-slave-startup.sh
+
+CMD ["/jenkins-slave-startup.sh"]
