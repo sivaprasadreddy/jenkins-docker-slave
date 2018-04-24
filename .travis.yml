@@ -9,6 +9,9 @@ env:
   - secure: "rAWVvyO22VYMw10ytgFbbWsHy8xVAy/RFMKOx8tSWRcT33NdwzVLjxn7dzkc8ysjWou+IHB1JI9fKZ6DB3ddNUYdgUwFa/mGnjSVTrFY9LFjgzFZ7sCKbMPJv86K3q8bjzrLRzrb0+NQ3FD5KV6YqAltmnYPUKkZ+6UlpwydZVWbern9WIUXYhd5LAiXAzruRaatIucuu3lgEGQG5PU9EDzPB14uPkZL8Mmm97Vs/ftprWiqqYd+kCqcy2j3mTk/5v6IlFDb7++XiHhHbF6HtJL3I51M4IIVb4gIFhZdGR+yXJoFmfuXuT9yhfofIdWhGplAHP09h4M+N+A2ms2Ss5kHoxnS+gU3gEIY2JCRw7PBs8UAxMnBjdUaVXYPjgJrpynkBMImRCVdVSOXsDsq7W4nS15WaINN1S0Xzj6xdBZEOwwQYKvu0sK5P3t90PoNQpanD93V1O+fl9wtB4Dv8RbCuKQZyiC1irX1K2tcODu0I2nd6p1ZtaisIZPkGPbLWe/2XQVlKsTjSeq7XiPqziuVo/YDIjO0+r55HLqVExeAvYg5mbc/9TJbx1BpPAXehqzAISiBvMFC/SRV379w3ejuNpv/rDXJolsqYryqBYIga3dnvFPBrJhr1CBLzov1SGavQbVlvFjJ8L07VWoexmsEmYSZtLakSz9BPNDrWPk="
   - COMMIT=${TRAVIS_COMMIT::7}
 
+script:
+- echo "Building sivaprasadreddy/jenkins-docker-slave"
+
 after_success:
 - docker login -u $DOCKER_USER -p $DOCKER_PASS
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
