@@ -1,0 +1,18 @@
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+  - secure: "DPwRCJQC+Y164CKPiMU6GM8yyEp8e/GUrneaaPJ30yNoQcK4RNh4VufgBjbYxHmZXeSa9q++QbGe2z9/eyA2uJxp/4GihpUV26zZ2bvNQ+WPaQxAvObFQPx7Lai1dcoQvK4ne2lykW/CooSVBdgSSRwgyRAlDeHryx254ujkO5mmarRdSWxrm3eN4Hrd4z8I6TEyjCq3P9A26G5EtdI/+Yiq28MmqPj413bb3Oxxh08OviEuYzOnzJPHg+G4KjF9a3ae5fQ+jlu2H+WsR61TGFN01nNEL0eppTfz0vjO/Cm/O87Tf98AdFtEYxnpwGnPt75we3FU7OGVa7Ev8IAFH//d606wbz+V1T8uWI+AC8hXDd674dUSeIlrR58vFrwbBf9vkpGxmJSMOwLCbJQzhi0+2zojvCm4OMzWFcJjKFhJbm17bCzP4hK6EAnUgAh3pNUm5JXtfjiRpdHdOKnFb0mNGqdRFx5u8aNI3MbDLQ/VDkLkMtywqkZ5/H442zfIJWZhHJeweU80tclGiTgYwDnDs9+6vbtklAwkF28i5y31YUkhcFRmVWiRhyhzS3v5WpghzzsAkcE+d7EqqHBbM3VliV3pQbO/bP80PlBfuYbHJdaJ4LxyUJruTYrNZsT7e/JQsVrQPv4yV092x2qV1qcUV4VeHYAEUtKeJZTQKwU="
+  - secure: "rAWVvyO22VYMw10ytgFbbWsHy8xVAy/RFMKOx8tSWRcT33NdwzVLjxn7dzkc8ysjWou+IHB1JI9fKZ6DB3ddNUYdgUwFa/mGnjSVTrFY9LFjgzFZ7sCKbMPJv86K3q8bjzrLRzrb0+NQ3FD5KV6YqAltmnYPUKkZ+6UlpwydZVWbern9WIUXYhd5LAiXAzruRaatIucuu3lgEGQG5PU9EDzPB14uPkZL8Mmm97Vs/ftprWiqqYd+kCqcy2j3mTk/5v6IlFDb7++XiHhHbF6HtJL3I51M4IIVb4gIFhZdGR+yXJoFmfuXuT9yhfofIdWhGplAHP09h4M+N+A2ms2Ss5kHoxnS+gU3gEIY2JCRw7PBs8UAxMnBjdUaVXYPjgJrpynkBMImRCVdVSOXsDsq7W4nS15WaINN1S0Xzj6xdBZEOwwQYKvu0sK5P3t90PoNQpanD93V1O+fl9wtB4Dv8RbCuKQZyiC1irX1K2tcODu0I2nd6p1ZtaisIZPkGPbLWe/2XQVlKsTjSeq7XiPqziuVo/YDIjO0+r55HLqVExeAvYg5mbc/9TJbx1BpPAXehqzAISiBvMFC/SRV379w3ejuNpv/rDXJolsqYryqBYIga3dnvFPBrJhr1CBLzov1SGavQbVlvFjJ8L07VWoexmsEmYSZtLakSz9BPNDrWPk="
+  - COMMIT=${TRAVIS_COMMIT::7}
+
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+- export IMAGE_NAME=sivaprasadreddy/jenkins-docker-slave
+- docker build -t $IMAGE_NAME:$COMMIT .
+- docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG
+- docker push $IMAGE_NAME
