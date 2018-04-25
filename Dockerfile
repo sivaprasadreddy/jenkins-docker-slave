@@ -10,17 +10,19 @@ RUN apt-get install -qqy \
     curl \
     lxc \
     iptables \
-    git \
     locales
 
 # Install Docker from Docker Inc. repositories.
 RUN curl -sSL https://get.docker.com/ | sh
 
+# Define additional metadata for our image.
+VOLUME /var/lib/docker
+
 # Install Docker Compose
 RUN apt-get install -y python-pip
 RUN pip install docker-compose
 
-# SSHD setup for jenkins-slave 
+# SSHD setup for jenkins-slave
 RUN locale-gen en_US.UTF-8 &&\
     apt-get -q update &&\
     DEBIAN_FRONTEND="noninteractive" apt-get -q upgrade -y -o Dpkg::Options::="--force-confnew" --no-install-recommends &&\
@@ -29,7 +31,7 @@ RUN locale-gen en_US.UTF-8 &&\
     apt-get -q clean -y && rm -rf /var/lib/apt/lists/* && rm -f /var/cache/apt/*.bin &&\
     sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd &&\
     mkdir -p /var/run/sshd
-ENV LANG en_US.UTF-8 ENV LANGUAGE en_US:en ENV LC_ALL en_US.UTF-8 
+ENV LANG en_US.UTF-8 ENV LANGUAGE en_US:en ENV LC_ALL en_US.UTF-8
 
 # Install JDK 8
 RUN apt-get update && \
@@ -43,21 +45,17 @@ RUN apt-get install -y software-properties-common && \
 ADD ./resources/ansible.cfg /etc/ansible/ansible.cfg
 
 
-# Set user jenkins to the image 
+# Set user jenkins to the image
 RUN useradd -m -d /home/jenkins -s /bin/sh jenkins && \
     echo "jenkins:jenkins" | chpasswd && \
     usermod -aG docker jenkins
 
-# Standard SSH port 
-EXPOSE 22  
+# Standard SSH port
+EXPOSE 22
 
 # Install the magic wrapper.
-ADD ./resources/wrapdocker /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/wrapdocker
-VOLUME /var/lib/docker
+RUN mv /usr/sbin/sshd /usr/sbin/sshd_real
+ADD ./resources/wrapdocker /usr/sbin/sshd
+RUN chmod +x /usr/sbin/sshd
 
-# place the jenkins slave startup script into the container
-ADD jenkins-slave-startup.sh /
-RUN chmod +x /jenkins-slave-startup.sh
-
-CMD ["/jenkins-slave-startup.sh"]
+CMD ["sshd"]
