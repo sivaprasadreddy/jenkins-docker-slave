@@ -10,7 +10,8 @@ RUN apt-get install -qqy \
     curl \
     lxc \
     iptables \
-    locales
+    locales \
+    git
 
 # Install Docker from Docker Inc. repositories.
 RUN curl -sSL https://get.docker.com/ | sh
